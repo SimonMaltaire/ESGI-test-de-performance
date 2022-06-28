@@ -27,7 +27,20 @@ Type d'utilisateurs prévus :
 
 ## 3) Architecture de l'application
 
+Docker (Base de donnée PostgreSQL / API Symfony)
+Front VueJS / Tailwindcss / Headless UI
+Infrastructure de production : heroku
+
 ## 4) Exigences du test
+
+Spike testing :
+
+Cas de figure où notre plateforme reçoit une arrivée massive d'utilisateurs.
+
+| Case | User Load | Response Time |
+| :--------------- |:---------------:|:---------------:|
+| Access Home Page  | 200 | 1 |
+| Access Reservation | 50 | 1 |
 
 ## 5) Environnement de test
 
