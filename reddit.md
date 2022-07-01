@@ -31,9 +31,8 @@ Veuillez renseigner également l'infrastructure de production (heroku, conteneur
 
 ## 5. Environnement de test
 Précisez l'environnement dans lequel vont se dérouler les tests :
-- CPU, Memoire
-- OS
-- Software pertinent
+- Processeur AMD Ryzen ThreadRipper Pro 3995WX Socket sWRX8 (2,7 Ghz), 32GB RAM
+- Linux
 
 Comparez à l'environnement de production, et si possible calculer le coefficient proportionnel : si vous avez 2 CPU en prod, 1 seul pour les tests, alors vous aurez un coefficient de 0.5 (100 utilisateurs en prod reviennent à 50 utilisateurs pour l'environnement de test).
 
@@ -41,11 +40,12 @@ Comparez à l'environnement de production, et si possible calculer le coefficien
 L'objectif ici est de déterminer les besoins performatifs de votre application en production, de déterminer les métriques que vous souhaitez surveiller et les critères de réussite de votre test.
 
 Pour cela, vous devrez :
-1. Comprendre les limitations dues à l'architecture du projet et à l'infrastructure.
-2. Comprendre/Prévoir le modèle de charge en production et l'adapter au modèle des tests.
-3. Identifier les type de tests nécessaires en fonction de l'utilisation de l'application (spike, endurance, volume...)
-4. Quels sont les métriques que l'on souhaite surveiller (utilisation du CPU/mémoire, temps de réponse moyen, taux d'erreur)
-5. Quels sont les métriques qui définiront la réussite ou l'échec du test.
+1. Les microservices ont beaucoup de qualités mais aussi quelques défauts : de moins bonne performance,
+   Plus difficile à maintenir le réseau (a moins de tolérance aux pannes, a besoin de plus d'équilibrage de charge, etc.) 
+2. ?
+3. Load testing - Spike testing - Volume testing - Endurance Testing
+4. Maximum active sessions - Memory use - Thread counts
+5. Less than 2% of failed request
 
 Consignez ces informations.
 
@@ -55,18 +55,21 @@ Détaillez les étapes des actions utilisateurs pour chaque process. Pour chaque
 Exemple :
 
 | Step # | Business Process Name |
-|--------------|:-----------------:|
-| 1 |       Home Page   |
-| 2 |         Login     |
-| 3 |     Search topic  |
-| 4 |      Vote topic   |
-| 6 |        Logout     |
+|----|:---------------------:|
+| 1  |       Home Page       |
+| 2  |         Login         |
+| 3  |     Search topic      |
+| 4  |      Vote topic       |
+| 5  |   Création de topic   |
+| 6  |        Logout         |
 
 En fonction des process choisis, établissez les jeux de données nécessaires. Prodiguez les détails sur le type de données, leur quantité et leur provenance (clone de la prod, fichiers csv créés uniquement pour ce test par exemple).
 
+Données relatives à l'utilisateur, les topics créés, favoris, messages etc ...
+
 Séparez les jeux de données internes aux process (clés API, credentials, ...) et ceux externes (remplissage de la base de donnée).
 
-Indiquez comment se fait la préparation de la donnée.
+Credentials → Bearer Token → Envoie du token à chaque requête
 
 ## 8. Execution des tests
 En premier lieu, détaillez le nombre de cycles d'execution de chaque process.
@@ -74,15 +77,21 @@ Ajoutez un résumé du scénario de test.
 
 Exemple :
 
-| Test Run | Test Scenario Summary |
-|--------------|:-----------:|
-| Smoke Test | To validate the performance test scripts and monitors |
-| Cycle 1 - Run 1 | Load Test - 1 Hour test with peak load |
-| Cycle 1 - Run 2 | Repeat Load Test - 1 Hour test with peak load |
-| Cycle 1 - Run 3 | Stress Test - 1 Hour test with 150% of peak load |
-| Cycle 2 - Run 1 | Load Test - 1 Hour test with peak load |
-| Cycle 2 - Run 2 | Repeat Load Test - 1 Hour test with peak load |
-| Cycle 2 - Run 3 | Stress Test - 1 Hour test with 150% of peak load |
+| Test Run        |                 Test Scenario Summary                 |
+|-----------------|:-----------------------------------------------------:|
+| Smoke Test      | To validate the performance test scripts and monitors |
+| Cycle 1 - Run 1 |        Load Test - 1 Hour test with peak load         |
+| Cycle 1 - Run 2 |     Repeat Load Test - 1 Hour test with peak load     |
+| Cycle 1 - Run 3 |    Spike Test - 30 min test with 150% of peak load    |
+| Cycle 1 - Run 4 |                      Volume Test                      |
+| Cycle 1 - Run 5 |        Load Test - 1 Hour test with peak load         |
+| Cycle 1 - Run 6 |                 Endurance Test - 12 H                 |
+| Cycle 2 - Run 1 |        Load Test - 1 Hour test with peak load         |
+| Cycle 2 - Run 2 |     Repeat Load Test - 1 Hour test with peak load     |
+| Cycle 2 - Run 3 |    Spike Test - 30 min test with 150% of peak load    |
+| Cycle 2 - Run 4 |                      Volume Test                      |
+| Cycle 2 - Run 5 |        Load Test - 1 Hour test with peak load         |
+| Cycle 2 - Run 6 |                 Endurance Test - 12 H                 |
 
 Ensuite, détaillez chaque scénario comme l'exemple suivant (pour le Load Test) :
 
